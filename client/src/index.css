@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-surface-950 text-surface-100 font-sans antialiased;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.surface.700') transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.surface.700');
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  /* Glass-morphism card */
+  .glass-card {
+    @apply bg-surface-900/60 backdrop-blur-xl border border-surface-700/50 rounded-2xl;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 via-primary-300 to-indigo-300 bg-clip-text text-transparent;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400
+           text-white font-medium px-6 py-2.5 rounded-xl
+           transition-all duration-300 ease-out
+           shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40
+           hover:-translate-y-0.5 active:translate-y-0
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply bg-surface-800 hover:bg-surface-700 border border-surface-600/50
+           text-surface-200 font-medium px-6 py-2.5 rounded-xl
+           transition-all duration-300 ease-out
+           hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  /* Danger button */
+  .btn-danger {
+    @apply bg-danger-600/20 hover:bg-danger-600/30 border border-danger-500/30
+           text-danger-400 font-medium px-6 py-2.5 rounded-xl
+           transition-all duration-300 ease-out;
+  }
+
+  /* Input field */
+  .input-field {
+    @apply w-full bg-surface-800/80 border border-surface-600/50 rounded-xl
+           px-4 py-3 text-surface-100 placeholder-surface-500
+           focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20
+           transition-all duration-300;
+  }
+
+  /* Skill badge */
+  .skill-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium
+           bg-primary-500/15 text-primary-300 border border-primary-500/20;
+  }
+
+  /* Match level badges */
+  .match-high {
+    @apply bg-success-500/15 text-success-400 border border-success-500/20;
+  }
+
+  .match-medium {
+    @apply bg-warning-500/15 text-warning-400 border border-warning-500/20;
+  }
+
+  .match-low {
+    @apply bg-danger-500/15 text-danger-400 border border-danger-500/20;
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    @apply animate-shimmer;
+    background: linear-gradient(
+      90deg,
+      theme('colors.surface.800') 25%,
+      theme('colors.surface.700') 50%,
+      theme('colors.surface.800') 75%
+    );
+    background-size: 200% 100%;
+  }
+}
