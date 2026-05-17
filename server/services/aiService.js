@@ -8,12 +8,11 @@ const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
  * Ordered by quality/reliability.
  */
 const FALLBACK_MODELS = [
-  'deepseek/deepseek-v4-flash:free',
-  'nvidia/nemotron-3-super-120b-a12b:free',
-  'google/gemma-4-31b-it:free',
-  'google/gemma-4-26b-a4b-it:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'nousresearch/hermes-3-llama-3.1-405b:free',
+  'google/gemini-2.5-flash:free',
+  'deepseek/deepseek-chat:free',
+  'google/gemma-2-9b-it:free',
+  'meta-llama/llama-3.1-8b-instruct:free',
+  'mistralai/mistral-7b-instruct:free',
 ];
 
 /**
@@ -81,9 +80,9 @@ class AIService {
         const status = error.response?.status;
         const msg = error.response?.data?.error?.message || error.message;
 
-        // If rate-limited (429) or server error (5xx), try the next model
-        if (status === 429 || status >= 500) {
-          console.log(`⚠️  ${model} returned ${status}, trying next model...`);
+        // If rate-limited (429), server error (5xx), or network timeout (undefined), try the next model
+        if (!status || status === 429 || status >= 500) {
+          console.log(`⚠️  ${model} returned ${status || 'timeout'}, trying next model...`);
           lastError = new Error(`${model}: ${msg}`);
           continue;
         }
