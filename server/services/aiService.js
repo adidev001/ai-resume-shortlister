@@ -1,48 +1,45 @@
 import axios from 'axios';
 import Candidate from '../models/Candidate.js';
 
-const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 /**
- * Fallback free models to try if the primary model is rate-limited.
+ * Fallback Groq models to try if the primary model is rate-limited.
  * Ordered by quality/reliability.
  */
 const FALLBACK_MODELS = [
-  'google/gemini-2.5-flash:free',
-  'deepseek/deepseek-chat:free',
-  'google/gemma-2-9b-it:free',
-  'meta-llama/llama-3.1-8b-instruct:free',
-  'mistralai/mistral-7b-instruct:free',
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
+  'mixtral-8x7b-32768',
+  'gemma2-9b-it',
 ];
 
 /**
  * AI Service
- * Integrates with OpenRouter API for intelligent candidate ranking,
+ * Integrates with Groq API for intelligent candidate ranking,
  * suitability explanations, and interview question generation.
  * Includes automatic model fallback on rate limits.
  */
 class AIService {
   /**
-   * Build the OpenRouter request headers.
+   * Build the Groq request headers.
    */
   _getHeaders() {
     return {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      'HTTP-Referer': process.env.CLIENT_URL || 'http://localhost:5173',
-      'X-Title': 'Candidate Shortlister',
+      Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
     };
   }
 
   /**
-   * Send a prompt to OpenRouter with automatic model fallback.
+   * Send a prompt to Groq with automatic model fallback.
    * If the primary model returns 429, tries fallback models.
    * @param {string} prompt - The user prompt
    * @param {string} systemPrompt - The system prompt
    * @returns {string} AI response text
    */
-  async _callOpenRouter(prompt, systemPrompt = '') {
-    const primaryModel = process.env.OPENROUTER_MODEL || 'deepseek/deepseek-v4-flash:free';
+  async _callGroq(prompt, systemPrompt = '') {
+    const primaryModel = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 
     // Build list: primary model first, then fallbacks (skip duplicates)
     const modelsToTry = [primaryModel, ...FALLBACK_MODELS.filter((m) => m !== primaryModel)];
@@ -53,7 +50,7 @@ class AIService {
       try {
         console.log(`🤖 Trying model: ${model}`);
         const response = await axios.post(
-          OPENROUTER_URL,
+          GROQ_URL,
           {
             model,
             messages: [
@@ -88,7 +85,7 @@ class AIService {
         }
 
         // For other errors (401, 400, etc.), don't retry — it won't help
-        throw new Error(`OpenRouter API error (${status}): ${msg}`);
+        throw new Error(`Groq API error (${status}): ${msg}`);
       }
     }
 
@@ -158,7 +155,7 @@ ${candidateSummaries}
 You MUST respond ONLY with a valid JSON object. No markdown code fences. No text before or after the JSON. Use this exact structure:
 {"rankings":[{"candidateName":"Name","rank":1,"score":85,"suitability":"High","explanation":"Why suitable","missingSkills":["skill1"],"recommendation":"Strongly Recommend","interviewFocus":["topic1"]}],"summary":"Pool summary"}`;
 
-    const aiResponse = await this._callOpenRouter(userPrompt, systemPrompt);
+    const aiResponse = await this._callGroq(userPrompt, systemPrompt);
 
     // Parse JSON from AI response
     try {
@@ -234,7 +231,7 @@ ${jobDescription ? `Job Description: ${this._sanitize(jobDescription)}` : ''}
 You MUST respond ONLY with a valid JSON object. No markdown code fences. No text before or after the JSON. Use this exact structure:
 {"technicalQuestions":[{"question":"...","difficulty":"Easy/Medium/Hard","skill":"relevant skill"}],"behavioralQuestions":[{"question":"...","purpose":"what this assesses"}],"skillGapQuestions":[{"question":"...","missingSkill":"skill to assess"}]}`;
 
-    const aiResponse = await this._callOpenRouter(userPrompt, systemPrompt);
+    const aiResponse = await this._callGroq(userPrompt, systemPrompt);
 
     try {
       let jsonStr = aiResponse;

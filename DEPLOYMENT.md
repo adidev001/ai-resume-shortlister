@@ -21,7 +21,7 @@ Before deploying, make sure you have:
 
 - ✅ A **GitHub** account with the project pushed to a repository
 - ✅ A **MongoDB Atlas** cluster (cloud-hosted, not localhost)
-- ✅ An **OpenRouter** API key
+- ✅ A **Groq** API key
 - ✅ A **Vercel** account — [Sign up free](https://vercel.com/signup)
 - ✅ A **Render** account — [Sign up free](https://render.com/register)
 
@@ -122,8 +122,8 @@ In the Render service dashboard, go to **"Environment"** and add:
 | ---------------------- | ------------------------------------------------------------ |
 | `PORT`                 | `10000` _(Render uses port 10000 by default)_                |
 | `MONGO_URI`            | `mongodb+srv://<user>:<password>@cluster.mongodb.net/candidate-shortlister` |
-| `OPENROUTER_API_KEY`   | `sk-or-v1-your-actual-key`                                   |
-| `OPENROUTER_MODEL`     | `google/gemma-3-4b-it:free`                                  |
+| `GROQ_API_KEY`         | `gsk_your_actual_key`                                        |
+| `GROQ_MODEL`           | `llama-3.3-70b-versatile`                                    |
 | `CLIENT_URL`           | `https://your-app-name.vercel.app` _(update after Vercel deploy)_ |
 | `NODE_ENV`             | `production`                                                 |
 
@@ -299,8 +299,8 @@ Render's free tier spins down services after ~15 minutes of inactivity. First re
 ```env
 PORT=10000
 MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/candidate-shortlister
-OPENROUTER_API_KEY=sk-or-v1-your-actual-key
-OPENROUTER_MODEL=google/gemma-3-4b-it:free
+GROQ_API_KEY=gsk_your_actual_key
+GROQ_MODEL=llama-3.3-70b-versatile
 CLIENT_URL=https://your-app-name.vercel.app
 NODE_ENV=production
 ```
